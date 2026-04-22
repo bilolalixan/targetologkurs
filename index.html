@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Targetolog Kursi — Kafolat bilan</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #ffffff; --fg: #09090b; --muted: #71717a;
+      --muted-bg: #f4f4f5; --border: #e4e4e7;
+      --accent: #18181b; --accent-fg: #ffffff; --radius: 8px;
+      --green: #16a34a; --green-bg: #f0fdf4; --green-border: #bbf7d0;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Geist', sans-serif; background: var(--bg); color: var(--fg); line-height: 1.6; font-size: 15px; -webkit-font-smoothing: antialiased; }
+
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: rgba(255,255,255,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); padding: 0 24px; height: 56px; display: flex; align-items: center; justify-content: space-between; }
+    .nav-logo { font-size: 13px; font-weight: 600; color: var(--fg); text-decoration: none; }
+    .nav-cta { font-size: 13px; font-weight: 500; background: var(--accent); color: var(--accent-fg); border: none; border-radius: var(--radius); padding: 7px 16px; cursor: pointer; text-decoration: none; transition: opacity 0.15s; }
+    .nav-cta:hover { opacity: 0.85; }
+
+    .container { max-width: 680px; margin: 0 auto; padding: 0 24px; }
+    section { padding: 80px 0; }
+    section + section { border-top: 1px solid var(--border); }
+
+    .hero { padding-top: 140px; padding-bottom: 80px; text-align: center; }
+    .badge { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 500; color: var(--green); background: var(--green-bg); border: 1px solid var(--green-border); border-radius: 999px; padding: 4px 12px; margin-bottom: 28px; }
+    .badge-dot { width: 6px; height: 6px; background: var(--green); border-radius: 50%; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.8)} }
+    h1 { font-size: clamp(28px, 5vw, 42px); font-weight: 700; line-height: 1.2; letter-spacing: -0.03em; margin-bottom: 20px; }
+    .hero-sub { font-size: 16px; color: var(--muted); max-width: 480px; margin: 0 auto 36px; line-height: 1.7; }
+    .hero-cta { display: inline-flex; align-items: center; gap: 8px; background: var(--accent); color: var(--accent-fg); font-size: 14px; font-weight: 600; padding: 12px 28px; border-radius: var(--radius); border: none; cursor: pointer; text-decoration: none; transition: opacity 0.15s, transform 0.15s; }
+    .hero-cta:hover { opacity: 0.88; transform: translateY(-1px); }
+    .hero-note { font-size: 12px; color: var(--muted); margin-top: 12px; }
+
+    .stats-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: calc(var(--radius) + 2px); overflow: hidden; margin-top: 56px; }
+    .stat { background: var(--bg); padding: 24px 20px; text-align: center; }
+    .stat-num { font-size: 26px; font-weight: 700; letter-spacing: -0.03em; line-height: 1; margin-bottom: 6px; }
+    .stat-label { font-size: 12px; color: var(--muted); line-height: 1.4; }
+
+    .section-label { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
+    h2 { font-size: clamp(22px,4vw,30px); font-weight: 700; letter-spacing: -0.025em; line-height: 1.25; margin-bottom: 16px; }
+    .section-desc { color: var(--muted); font-size: 15px; line-height: 1.7; margin-bottom: 36px; }
+
+    .problem-list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+    .problem-list li { display: flex; align-items: flex-start; gap: 12px; padding: 16px; background: var(--muted-bg); border-radius: var(--radius); font-size: 14px; line-height: 1.5; }
+    .problem-list li::before { content: "—"; color: var(--muted); flex-shrink: 0; margin-top: 1px; }
+
+    .roadmap { display: flex; flex-direction: column; }
+    .roadmap-item { display: grid; grid-template-columns: 56px 1fr; gap: 20px; position: relative; }
+    .roadmap-item:not(:last-child)::after { content: ''; position: absolute; left: 27px; top: 44px; bottom: -8px; width: 1px; background: var(--border); }
+    .roadmap-left { display: flex; align-items: flex-start; justify-content: center; padding-top: 4px; }
+    .roadmap-num { width: 36px; height: 36px; border-radius: 50%; background: var(--fg); color: var(--bg); font-size: 13px; font-weight: 600; display: flex; align-items: center; justify-content: center; font-family: 'Geist Mono', monospace; flex-shrink: 0; }
+    .roadmap-content { padding: 4px 0 32px; }
+    .roadmap-month { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+    .roadmap-title { font-size: 15px; font-weight: 600; margin-bottom: 6px; }
+    .roadmap-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
+    .roadmap-salary { display: inline-block; font-size: 12px; font-weight: 600; font-family: 'Geist Mono', monospace; color: var(--green); background: var(--green-bg); border: 1px solid var(--green-border); border-radius: 4px; padding: 2px 8px; margin-top: 8px; }
+
+    .includes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .include-card { border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
+    .include-icon { font-size: 20px; margin-bottom: 10px; }
+    .include-title { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+    .include-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+    .guarantee-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
+    .g-card { border: 1px solid var(--border); border-radius: var(--radius); padding: 24px 20px; }
+    .g-card.green { border-color: var(--green-border); background: var(--green-bg); }
+    .g-label { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+    .g-card.green .g-label { color: var(--green); }
+    .g-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+    .g-time { font-size: 12px; color: var(--muted); }
+    .g-amount { font-size: 16px; font-weight: 700; font-family: 'Geist Mono', monospace; letter-spacing: -0.02em; }
+    .g-card.green .g-amount { color: var(--green); }
+    .g-title { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
+    .g-text { font-size: 13px; color: var(--muted); line-height: 1.6; }
+    .why-block { border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; background: var(--muted-bg); }
+    .why-title { font-size: 13px; font-weight: 600; margin-bottom: 10px; }
+    .why-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .why-list li { font-size: 13px; color: var(--muted); display: flex; gap: 10px; align-items: flex-start; }
+    .why-list li::before { content: "✓"; color: var(--green); font-weight: 700; flex-shrink: 0; }
+
+    .forwho-grid { display: flex; flex-direction: column; gap: 10px; }
+    .forwho-item { display: flex; align-items: center; gap: 14px; padding: 16px; border: 1px solid var(--border); border-radius: var(--radius); font-size: 14px; }
+    .forwho-icon { font-size: 18px; flex-shrink: 0; }
+
+    .price-card { border: 1px solid var(--border); border-radius: calc(var(--radius) + 4px); padding: 32px; text-align: center; }
+    .price-tag { font-size: 48px; font-weight: 700; letter-spacing: -0.04em; font-family: 'Geist Mono', monospace; line-height: 1; margin-bottom: 6px; }
+    .price-sub { font-size: 13px; color: var(--muted); margin-bottom: 28px; }
+    .price-features { list-style: none; text-align: left; margin-bottom: 28px; display: flex; flex-direction: column; gap: 10px; }
+    .price-features li { font-size: 13px; display: flex; gap: 10px; align-items: flex-start; }
+    .price-features li::before { content: "✓"; color: var(--green); font-weight: 700; flex-shrink: 0; }
+
+    .seats-bar { background: var(--muted-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; font-size: 13px; }
+    .seats-label { color: var(--muted); }
+    .seats-count { font-weight: 700; font-family: 'Geist Mono', monospace; }
+
+    .form-field { margin-bottom: 14px; text-align: left; }
+    .form-label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 6px; }
+    .form-input { width: 100%; padding: 11px 14px; border: 1px solid var(--border); border-radius: var(--radius); font-size: 14px; font-family: 'Geist', sans-serif; color: var(--fg); background: var(--bg); outline: none; transition: border-color 0.15s; }
+    .form-input:focus { border-color: var(--fg); }
+    .form-input::placeholder { color: var(--muted); }
+
+    .submit-btn { display: block; width: 100%; background: var(--accent); color: var(--accent-fg); font-size: 15px; font-weight: 600; font-family: 'Geist', sans-serif; padding: 14px; border-radius: var(--radius); border: none; cursor: pointer; transition: opacity 0.15s; margin-bottom: 10px; }
+    .submit-btn:hover { opacity: 0.88; }
+    .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .form-note { font-size: 12px; color: var(--muted); }
+
+    .success-wrap { display: none; text-align: center; padding: 20px 0; }
+    .success-icon { font-size: 36px; margin-bottom: 12px; }
+    .success-title { font-size: 16px; font-weight: 600; margin-bottom: 6px; }
+    .success-sub { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
+    .tg-btn { display: inline-block; background: var(--accent); color: var(--accent-fg); font-size: 14px; font-weight: 600; padding: 12px 28px; border-radius: var(--radius); text-decoration: none; transition: opacity 0.15s; }
+    .tg-btn:hover { opacity: 0.88; }
+
+    footer { border-top: 1px solid var(--border); padding: 32px 0; text-align: center; }
+    footer p { font-size: 12px; color: var(--muted); }
+
+    @keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+    .hero > * { animation: fadeUp 0.5s ease both; }
+    .hero > *:nth-child(1){animation-delay:0.05s} .hero > *:nth-child(2){animation-delay:0.12s}
+    .hero > *:nth-child(3){animation-delay:0.19s} .hero > *:nth-child(4){animation-delay:0.26s}
+    .hero > *:nth-child(5){animation-delay:0.33s}
+
+    @media(max-width:520px) {
+      .stats-grid{grid-template-columns:1fr} .guarantee-cards{grid-template-columns:1fr}
+      .includes-grid{grid-template-columns:1fr} .price-card{padding:24px 20px}
+      nav{padding:0 16px} .container{padding:0 16px}
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="#">Bilol Alixan</a>
+  <a class="nav-cta" href="#yozilish">Yozilish →</a>
+</nav>
+
+<div class="container">
+
+  <section class="hero">
+    <div class="badge"><span class="badge-dot"></span>Qabul ochiq — 20 o'rin</div>
+    <h1>2 oyda 500$ daromad.<br/>100% ishga kirish kafolati.</h1>
+    <p class="hero-sub">3 oyda professional targetolog. Kurs tugagach o'zimizning Performance Marketing agentligimizda ishga qabul qilinasiz — ish qidirib yurmasdan.</p>
+    <a class="hero-cta" href="#yozilish">Kursga yozilish <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+    <p class="hero-note">16–22 yosh · Kompyuterni biladiganlar uchun</p>
+    <div class="stats-grid">
+      <div class="stat"><div class="stat-num">500$</div><div class="stat-label">60 kunda minimal<br/>daromad</div></div>
+      <div class="stat"><div class="stat-num">1000$</div><div class="stat-label">120 kunda<br/>daromad</div></div>
+      <div class="stat"><div class="stat-num">100%</div><div class="stat-label">Ishga kirish<br/>kafolati</div></div>
+    </div>
+  </section>
+
+  <section>
+    <p class="section-label">Muammo</p>
+    <h2>Ko'pchilik kurs o'qib nima qilishini bilmay qoladi</h2>
+    <p class="section-desc">Targetolog kurslar ko'p. Lekin kurs tugagach haqiqiy loyihada ishlash boshqacha narsa.</p>
+    <ul class="problem-list">
+      <li>Kurs o'qiladi, amaliyot yo'q — portfolio bo'sh qoladi</li>
+      <li>Ish topish qiyin, tajribasiz odam olmaydi</li>
+      <li>Qancha ishlashni bilmay arzon narxda ishlanadi</li>
+      <li>Mentor yo'q, o'zing yolg'iz qolasan</li>
+    </ul>
+  </section>
+
+  <section>
+    <p class="section-label">Yo'l xarita</p>
+    <h2>3 oyda — real loyihada, real pul</h2>
+    <p class="section-desc">Har bir oy aniq natijaga yo'naltirilgan.</p>
+    <div class="roadmap">
+      <div class="roadmap-item">
+        <div class="roadmap-left"><div class="roadmap-num">01</div></div>
+        <div class="roadmap-content">
+          <div class="roadmap-month">1-oy</div>
+          <div class="roadmap-title">Nazariya + Amaliyot</div>
+          <div class="roadmap-desc">Meta Ads, targeting strategiyasi, kreativ tahlil, pixel sozlash, A/B test. Hamma narsa amalda ko'rsatiladi.</div>
+        </div>
+      </div>
+      <div class="roadmap-item">
+        <div class="roadmap-left"><div class="roadmap-num">02</div></div>
+        <div class="roadmap-content">
+          <div class="roadmap-month">2-oy</div>
+          <div class="roadmap-title">Real keyslarda ishlash</div>
+          <div class="roadmap-desc">Agentligimizning haqiqiy loyihalarida superviziya ostida ishlaysiz. Haqiqiy budget, haqiqiy natija.</div>
+          <span class="roadmap-salary">400–500$ / oy</span>
+        </div>
+      </div>
+      <div class="roadmap-item">
+        <div class="roadmap-left"><div class="roadmap-num">03</div></div>
+        <div class="roadmap-content">
+          <div class="roadmap-month">3-oy va undan keyin</div>
+          <div class="roadmap-title">Rasmiy ish — 1 yillik shartnoma</div>
+          <div class="roadmap-desc">Performance Marketing agentligimizga rasmiy qabul. O'sish aniq — natijalarga qarab oshib boradi.</div>
+          <span class="roadmap-salary">500$ → 1000$ → 1500$ / oy</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <p class="section-label">Kurs ichida</p>
+    <h2>Faqat targeting emas</h2>
+    <p class="section-desc">Hozirgi targetologlarning 80%idan o'tish uchun kerakli hamma narsani beramiz.</p>
+    <div class="includes-grid">
+      <div class="include-card"><div class="include-icon">🎯</div><div class="include-title">Meta Targeting</div><div class="include-desc">Strategiya, audience, kreativ, optimizatsiya — professional darajada.</div></div>
+      <div class="include-card"><div class="include-icon">🤖</div><div class="include-title">AI bilan ishlash</div><div class="include-desc">ChatGPT, Claude va boshqa toollar orqali ishni 3x tezlashtirish.</div></div>
+      <div class="include-card"><div class="include-icon">💻</div><div class="include-title">Vibe Coding — Sayt yasash</div><div class="include-desc">AI orqali landing page va sayt yasash — kod bilmasdan ham.</div></div>
+      <div class="include-card"><div class="include-icon">📊</div><div class="include-title">Analytics & Reporting</div><div class="include-desc">Natijalarni o'lchash, klientga hisobot berish, qaror qabul qilish.</div></div>
+    </div>
+  </section>
+
+  <section>
+    <p class="section-label">Kafolat</p>
+    <h2>Ikki kafolat — bitta kurs</h2>
+    <p class="section-desc">Boshqa kurslarda yo'q narsa.</p>
+    <div class="guarantee-cards">
+      <div class="g-card green">
+        <div class="g-label">Daromad kafolati</div>
+        <div class="g-row"><span class="g-time">60 kunda</span><span class="g-amount">400–500$</span></div>
+        <div class="g-row"><span class="g-time">120 kunda</span><span class="g-amount">1000$+</span></div>
+      </div>
+      <div class="g-card">
+        <div class="g-label">Ishga kirish kafolati</div>
+        <div class="g-title">100% qabul</div>
+        <div class="g-text">Kurs tugagach o'zimizning agentligimizda rasmiy ishlaysiz. Ish qidirib yurmaysiz.</div>
+      </div>
+    </div>
+    <div class="why-block">
+      <div class="why-title">Nima uchun biz bu kursni ochdik?</div>
+      <ul class="why-list">
+        <li>Performance Marketing agentligimiz real loyihalar olib ishlamoqda</li>
+        <li>Targeting bo'limini kengaytirishimiz kerak</li>
+        <li>Tashqaridan odam emas — o'zimiz o'qitgan, o'zimiz ishongan odamni olamiz</li>
+        <li>Shuning uchun bu imkoniyat qaytib ochilmaydi</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <p class="section-label">Kim uchun</p>
+    <h2>Bu kurs siz uchun</h2>
+    <p class="section-desc">Faqat to'g'ri talabalar bilan ishlashni xohlaymiz.</p>
+    <div class="forwho-grid">
+      <div class="forwho-item"><span class="forwho-icon">🎂</span><span>16 yoshdan 22 yoshgacha</span></div>
+      <div class="forwho-item"><span class="forwho-icon">💻</span><span>Kompyuter va internetni tushunasiz</span></div>
+      <div class="forwho-item"><span class="forwho-icon">🔥</span><span>Jiddiy ishlashga tayyor, natijaga intilosiz</span></div>
+      <div class="forwho-item"><span class="forwho-icon">🚀</span><span>1 yil ichida karyerangizni o'zgartirmoqchisiz</span></div>
+    </div>
+  </section>
+
+  <section id="yozilish">
+    <p class="section-label">Narx</p>
+    <h2>Bir marta to'lov — karyera boshlash</h2>
+    <div class="price-card">
+      <div class="price-tag">$500</div>
+      <div class="price-sub">Bir martalik to'lov · Hamma narsa ichida</div>
+      <ul class="price-features">
+        <li>3 oylik to'liq kurs (nazariya + amaliyot)</li>
+        <li>Real loyihalarda ishlash imkoniyati</li>
+        <li>100% ishga kirish kafolati</li>
+        <li>AI toollar va Vibe Coding bonus kursi</li>
+        <li>1 yillik rasmiy shartnoma</li>
+        <li>500$ → 1500$/oy o'sish yo'li</li>
+      </ul>
+      <div class="seats-bar">
+        <span class="seats-label">Qolgan o'rinlar</span>
+        <span class="seats-count">20 / 20</span>
+      </div>
+
+      <div id="form-wrap">
+        <div class="form-field">
+          <label class="form-label">Ism Familiya</label>
+          <input class="form-input" type="text" id="fullname" placeholder="Masalan: Bilol Alixan" />
+        </div>
+        <div class="form-field">
+          <label class="form-label">Telefon raqam</label>
+          <input class="form-input" type="tel" id="phone" placeholder="+998 90 000 00 00" />
+        </div>
+        <button class="submit-btn" id="submit-btn" onclick="submitForm()">Kursga yozilish →</button>
+        <p class="form-note">Ma'lumotlaringiz yuborilgach Telegram akkauntga o'tasiz</p>
+      </div>
+
+      <div class="success-wrap" id="success-wrap">
+        <div class="success-icon">✅</div>
+        <div class="success-title">Muvaffaqiyatli yuborildi!</div>
+        <div class="success-sub">Hozir Telegram akkauntga o'tasiz...</div>
+        <a class="tg-btn" href="https://t.me/bilolalixan" target="_blank">Telegramga o'tish →</a>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <div class="container">
+    <p>© 2025 Performance Marketing Agency · Barcha huquqlar himoyalangan</p>
+  </div>
+</footer>
+
+<script>
+  async function submitForm() {
+    const name = document.getElementById('fullname').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    const btn = document.getElementById('submit-btn');
+
+    if (!name) { alert("Ism Familiyangizni kiriting"); return; }
+    if (!phone) { alert("Telefon raqamingizni kiriting"); return; }
+
+    btn.textContent = "Yuborilmoqda...";
+    btn.disabled = true;
+
+    const TOKEN = "7041522596:AAG2Gh4iZkIoEL4jdgZrfexVA3scj60sCpw";
+    const CHAT_ID = "1683842173";
+    const text = `🎯 Yangi ariza!\n\n👤 Ism: ${name}\n📞 Telefon: ${phone}\n\n📌 Manba: Targetolog kurs landing`;
+
+    try {
+      await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ chat_id: CHAT_ID, text })
+      });
+    } catch(e) {}
+
+    document.getElementById('form-wrap').style.display = 'none';
+    document.getElementById('success-wrap').style.display = 'block';
+
+    setTimeout(() => { window.open('https://t.me/bilolalixan', '_blank'); }, 1500);
+  }
+</script>
+
+</body>
+</html>
